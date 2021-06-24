@@ -5,7 +5,6 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
 	"runtime"
-	"time"
 )
 
 const (
@@ -14,6 +13,7 @@ const (
 	factor = 50
 	fps    = 10
 
+	// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 	vertexShaderSource = `
 		#version 410
 		in vec3 vp;
@@ -22,6 +22,7 @@ const (
 		}
 	` + "\x00"
 
+	// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 	fragmentShaderSource = `
 		#version 410
 		out vec4 frag_colour;
@@ -32,8 +33,9 @@ const (
 )
 
 var isInPlay = true
-var gameStart = true
 
+// Play main function to play the game, initializes and displays game to window
+// modified from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 func Play() {
 	runtime.LockOSThread()
 
@@ -48,31 +50,17 @@ func Play() {
 	snake := makeSnake()
 
 	for !window.ShouldClose() {
-		if keyInput == 'e' {
-			isInPlay = true
-		}
 		if isInPlay {
-			isInPlay = playGame(snake, cells, food, window, program)
+			isInPlay = runGame(snake, cells, food, window, program)
 		} else {
-			drawWindow(window, program)
 			food = initializeFood()
 			snake = makeSnake()
+			isInPlay = true
 		}
 	}
 }
 
-func playGame(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) bool {
-	t := time.Now()
-	time.Sleep(time.Second/time.Duration(fps) - time.Since(t))
-	s.move()
-	if !s.isOutOfBounds() {
-		s.eat(f)
-		drawAll(s, cells, f, window, program)
-		return true
-	}
-	return false
-}
-
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 // initGlfw initializes glfw and returns a Window to use.
 func initGlfw() *glfw.Window {
 	if err := glfw.Init(); err != nil {
@@ -93,6 +81,7 @@ func initGlfw() *glfw.Window {
 	return window
 }
 
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 // initOpenGL initializes OpenGL and returns an intiialized program.
 func initOpenGL() uint32 {
 	if err := gl.Init(); err != nil {

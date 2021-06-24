@@ -1,16 +1,10 @@
 package snek
 
-import (
-	"github.com/go-gl/glfw/v3.2/glfw"
-)
-
 type snake struct {
 	length    int
 	body      [][]int
 	direction rune
 }
-
-var keyInput rune
 
 var dirOffset = map[rune][]int{
 	'l': {-1, 0},
@@ -20,8 +14,10 @@ var dirOffset = map[rune][]int{
 	'n': {0, 0},
 }
 
+// creates new snake at random location
 func makeSnake() *snake {
 	x, y := randomSpawn()
+	keyInput = ' '
 
 	return &snake{
 		length:    1,
@@ -30,6 +26,8 @@ func makeSnake() *snake {
 	}
 }
 
+// determines if key input is valid direction
+// move in desired direction if valid
 func (s *snake) move() {
 	if _, err := dirOffset[keyInput]; err == true {
 		s.direction = keyInput
@@ -37,6 +35,7 @@ func (s *snake) move() {
 	s.moveInDirection(s.direction)
 }
 
+// checks if snake is going out of bounds
 func (s *snake) isOutOfBounds() bool {
 	if s.body[0][0] >= factor || s.body[0][1] >= factor ||
 		s.body[0][0] < 0 || s.body[0][1] < 0 {
@@ -45,6 +44,7 @@ func (s *snake) isOutOfBounds() bool {
 	return false
 }
 
+// moves snake in specified direction
 func (s *snake) moveInDirection(direction rune) {
 	move := dirOffset[direction]
 	newBody := [][]int{{s.body[0][0] + move[0], s.body[0][1] + move[1]}}
@@ -56,32 +56,21 @@ func (s *snake) moveInDirection(direction rune) {
 	s.body = newBody
 }
 
+// determines when snake collides with food
+// snake grows and food moves if collision happens
 func (s *snake) eat(f *food) {
 	head := s.body[0]
 	if head[0] == f.x && head[1] == f.y {
-		f.move()
+		f.move(s)
 		s.grow()
 	}
 }
 
+// adds new segment onto the end of snake body with
+// respect to the current direction the snake is moving in
 func (s *snake) grow() {
 	tail := s.body[len(s.body)-1]
+	// the next segment is behind the current tail, in the opposite direction the snake is moving in
 	nextSegment := []int{tail[0] + -1*dirOffset[s.direction][0], tail[1] + -1*dirOffset[s.direction][1]}
 	s.body = append(s.body, nextSegment)
-}
-
-func keyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action,
-	mods glfw.ModifierKey) {
-	switch key {
-	case glfw.KeyUp:
-		keyInput = 'u'
-	case glfw.KeyDown:
-		keyInput = 'd'
-	case glfw.KeyLeft:
-		keyInput = 'l'
-	case glfw.KeyRight:
-		keyInput = 'r'
-	case glfw.KeyEnter:
-		keyInput = 'e'
-	}
 }

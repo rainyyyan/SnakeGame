@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// makeVao initializes and returns a vertex array from the points provided.
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 func makeVao(points []float32) uint32 {
 	var vbo uint32
 	gl.GenBuffers(1, &vbo)
@@ -24,6 +24,7 @@ func makeVao(points []float32) uint32 {
 	return vao
 }
 
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 func compileShader(source string, shaderType uint32) (uint32, error) {
 	shader := gl.CreateShader(shaderType)
 
@@ -47,44 +48,28 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	return shader, nil
 }
 
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 func (c *cell) draw() {
 	gl.BindVertexArray(c.drawable)
 	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(square)/3))
 }
 
-func (f *food) draw() {
-	gl.BindVertexArray(f.drawable)
-	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(circle)/3))
-}
-
+// draws the cells that the snake body is currently in
 func drawSnake(s *snake, cells [][]*cell) {
 	for _, v := range s.body {
 		cells[v[0]][v[1]].draw()
 	}
 }
 
+// draws window, snake and food
 func drawAll(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 
-	drawSnake(s, cells)
-	cells[f.x][f.y].draw()
-
-	glfw.PollEvents()
-	window.SwapBuffers()
-}
-
-func drawGame(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) {
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.UseProgram(program)
-
-	drawSnake(s, cells)
-	cells[f.x][f.y].draw()
-}
-
-func drawWindow(window *glfw.Window, program uint32) {
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	gl.UseProgram(program)
+	if isInPlay {
+		drawSnake(s, cells)
+		cells[f.x][f.y].draw()
+	}
 
 	glfw.PollEvents()
 	window.SwapBuffers()

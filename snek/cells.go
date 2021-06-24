@@ -1,5 +1,8 @@
 package snek
 
+// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-2-drawing-the-game-board
+// makes the cells of the game board
+
 var (
 	square = []float32{
 		-0.5, 0.5, 0,
@@ -58,7 +61,7 @@ func newCell(x, y int) *cell {
 
 	return &cell{
 		drawable: makeVao(points),
-		x: x,
-		y: y,
+		x:        x,
+		y:        y,
 	}
 }
