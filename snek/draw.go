@@ -49,12 +49,12 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 
 func (c *cell) draw() {
 	gl.BindVertexArray(c.drawable)
-	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(square) / 3))
+	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(square)/3))
 }
 
 func (f *food) draw() {
 	gl.BindVertexArray(f.drawable)
-	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(circle) / 3))
+	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(circle)/3))
 }
 
 func drawSnake(s *snake, cells [][]*cell) {
@@ -69,17 +69,22 @@ func drawAll(s *snake, cells [][]*cell, f *food, window *glfw.Window, program ui
 
 	drawSnake(s, cells)
 	cells[f.x][f.y].draw()
-	//f.draw()
 
 	glfw.PollEvents()
 	window.SwapBuffers()
 }
 
-func drawFood(f *food, window *glfw.Window, program uint32) {
+func drawGame(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) {
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 
-	f.draw()
+	drawSnake(s, cells)
+	cells[f.x][f.y].draw()
+}
+
+func drawWindow(window *glfw.Window, program uint32) {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.UseProgram(program)
 
 	glfw.PollEvents()
 	window.SwapBuffers()

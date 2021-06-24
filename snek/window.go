@@ -1,8 +1,7 @@
 package snek
 
 import (
-	"fmt"
-	"github.com/go-gl/gl/v4.1-core/gl" // OR: github.com/go-gl/gl/v2.1/gl
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
 	"runtime"
@@ -13,6 +12,7 @@ const (
 	width  = 700
 	height = 700
 	factor = 50
+	fps    = 10
 
 	vertexShaderSource = `
 		#version 410
@@ -32,8 +32,9 @@ const (
 )
 
 var isInPlay = true
+var gameStart = true
 
-func Help() {
+func Play() {
 	runtime.LockOSThread()
 
 	window := initGlfw()
@@ -43,23 +44,33 @@ func Help() {
 	program := initOpenGL()
 
 	cells := makeCells()
-
 	food := initializeFood()
 	snake := makeSnake()
 
 	for !window.ShouldClose() {
-		if isInPlay {
-			playGame(snake, cells, food, window, program)
+		if keyInput == 'e' {
+			isInPlay = true
 		}
-		fmt.Println(isInPlay)
+		if isInPlay {
+			isInPlay = playGame(snake, cells, food, window, program)
+		} else {
+			drawWindow(window, program)
+			food = initializeFood()
+			snake = makeSnake()
+		}
 	}
 }
 
-func playGame(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) {
-	time.Sleep(100 * time.Millisecond)
+func playGame(s *snake, cells [][]*cell, f *food, window *glfw.Window, program uint32) bool {
+	t := time.Now()
+	time.Sleep(time.Second/time.Duration(fps) - time.Since(t))
 	s.move()
-	s.eat(f)
-	drawAll(s, cells, f, window, program)
+	if !s.isOutOfBounds() {
+		s.eat(f)
+		drawAll(s, cells, f, window, program)
+		return true
+	}
+	return false
 }
 
 // initGlfw initializes glfw and returns a Window to use.
@@ -106,4 +117,3 @@ func initOpenGL() uint32 {
 	gl.LinkProgram(prog)
 	return prog
 }
-

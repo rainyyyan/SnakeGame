@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	snek.Help()
+	snek.Play()
 }

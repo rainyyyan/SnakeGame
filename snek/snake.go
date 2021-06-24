@@ -5,14 +5,14 @@ import (
 )
 
 type snake struct {
-	length int
-	body [][]int
+	length    int
+	body      [][]int
 	direction rune
 }
 
 var keyInput rune
 
-var dirOffset = map[rune][]int {
+var dirOffset = map[rune][]int{
 	'l': {-1, 0},
 	'r': {1, 0},
 	'u': {0, 1},
@@ -23,9 +23,9 @@ var dirOffset = map[rune][]int {
 func makeSnake() *snake {
 	x, y := randomSpawn()
 
-	return &snake {
-		length: 1,
-		body: [][]int{{x,y}},
+	return &snake{
+		length:    1,
+		body:      [][]int{{x, y}},
 		direction: 'n',
 	}
 }
@@ -37,15 +37,19 @@ func (s *snake) move() {
 	s.moveInDirection(s.direction)
 }
 
+func (s *snake) isOutOfBounds() bool {
+	if s.body[0][0] >= factor || s.body[0][1] >= factor ||
+		s.body[0][0] < 0 || s.body[0][1] < 0 {
+		return true
+	}
+	return false
+}
+
 func (s *snake) moveInDirection(direction rune) {
 	move := dirOffset[direction]
-	newHead := []int {s.body[0][0] + move[0], s.body[0][1] + move[1]}
-	if newHead[0] > factor || newHead[1] > factor {
-		isInPlay = false
-	}
-	newBody := [][]int {{s.body[0][0] + move[0], s.body[0][1] + move[1]}}
+	newBody := [][]int{{s.body[0][0] + move[0], s.body[0][1] + move[1]}}
 	for i, v := range s.body {
-		if i < len(s.body) - 1 {
+		if i < len(s.body)-1 {
 			newBody = append(newBody, v)
 		}
 	}
@@ -61,8 +65,8 @@ func (s *snake) eat(f *food) {
 }
 
 func (s *snake) grow() {
-	tail := s.body[len(s.body) - 1]
-	nextSegment := []int {tail[0] + -1 * dirOffset[s.direction][0], tail[1] + -1 * dirOffset[s.direction][1]}
+	tail := s.body[len(s.body)-1]
+	nextSegment := []int{tail[0] + -1*dirOffset[s.direction][0], tail[1] + -1*dirOffset[s.direction][1]}
 	s.body = append(s.body, nextSegment)
 }
 
@@ -77,5 +81,7 @@ func keyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Ac
 		keyInput = 'l'
 	case glfw.KeyRight:
 		keyInput = 'r'
+	case glfw.KeyEnter:
+		keyInput = 'e'
 	}
 }
