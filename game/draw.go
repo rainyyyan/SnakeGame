@@ -1,4 +1,4 @@
-package snek
+package game
 
 import (
 	"fmt"
@@ -54,7 +54,7 @@ func (c *cell) draw() {
 	gl.DrawArrays(gl.TRIANGLE_FAN, 0, int32(len(square)/3))
 }
 
-// draws the cells that the snake body is currently in
+// draws the cells that the snake body currently occupies
 func drawSnake(s *snake, cells [][]*cell) {
 	for _, v := range s.body {
 		cells[v[0]][v[1]].draw()
@@ -66,10 +66,8 @@ func drawAll(s *snake, cells [][]*cell, f *food, window *glfw.Window, program ui
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 	gl.UseProgram(program)
 
-	if isInPlay {
-		drawSnake(s, cells)
-		cells[f.x][f.y].draw()
-	}
+	drawSnake(s, cells)
+	cells[f.x][f.y].draw()
 
 	glfw.PollEvents()
 	window.SwapBuffers()

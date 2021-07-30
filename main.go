@@ -1,9 +1,9 @@
 package main
 
 import (
-	"awesomeProject/snek"
+	"snakeGame/game"
 )
 
 func main() {
-	snek.Play()
+	game.Play()
 }

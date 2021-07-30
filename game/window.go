@@ -1,4 +1,4 @@
-package snek
+package game
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	width  = 700
-	height = 700
-	factor = 50
-	fps    = 10
+	width     = 700
+	height    = 700
+	boardSize = 50
+	fps       = 10
 
 	// from https://kylewbanks.com/blog/tutorial-opengl-with-golang-part-1-hello-opengl
 	vertexShaderSource = `

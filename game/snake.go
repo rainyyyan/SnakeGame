@@ -1,4 +1,4 @@
-package snek
+package game
 
 type snake struct {
 	length    int
@@ -26,18 +26,9 @@ func makeSnake() *snake {
 	}
 }
 
-// determines if key input is valid direction
-// move in desired direction if valid
-func (s *snake) move() {
-	if _, err := dirOffset[keyInput]; err == true {
-		s.direction = keyInput
-	}
-	s.moveInDirection(s.direction)
-}
-
 // checks if snake is going out of bounds
 func (s *snake) isOutOfBounds() bool {
-	if s.body[0][0] >= factor || s.body[0][1] >= factor ||
+	if s.body[0][0] >= boardSize || s.body[0][1] >= boardSize ||
 		s.body[0][0] < 0 || s.body[0][1] < 0 {
 		return true
 	}
@@ -45,8 +36,9 @@ func (s *snake) isOutOfBounds() bool {
 }
 
 // moves snake in specified direction
-func (s *snake) moveInDirection(direction rune) {
-	move := dirOffset[direction]
+func (s *snake) move() {
+	changeSnakeDirection(s)
+	move := dirOffset[s.direction]
 	newBody := [][]int{{s.body[0][0] + move[0], s.body[0][1] + move[1]}}
 	for i, v := range s.body {
 		if i < len(s.body)-1 {
@@ -61,7 +53,7 @@ func (s *snake) moveInDirection(direction rune) {
 func (s *snake) eat(f *food) {
 	head := s.body[0]
 	if head[0] == f.x && head[1] == f.y {
-		f.move(s)
+		f.changeFoodLocation(s)
 		s.grow()
 	}
 }

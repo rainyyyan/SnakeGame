@@ -1,4 +1,4 @@
-package snek
+package game
 
 type food struct {
 	x int
@@ -14,8 +14,9 @@ func initializeFood() *food {
 	}
 }
 
-// moves food to random location but not on top of snake
-func (f *food) move(s *snake) {
+// moves food to random location
+// but not on top of snake
+func (f *food) changeFoodLocation(s *snake) {
 	x, y := randomSpawn()
 	for _, s := range s.body {
 		if s[0] == x && s[1] == y {

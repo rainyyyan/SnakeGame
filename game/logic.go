@@ -1,4 +1,4 @@
-package snek
+package game
 
 import (
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -38,11 +38,19 @@ func keyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Ac
 	}
 }
 
+// determines if key input is valid direction
+// change to changeFoodLocation in desired direction if valid
+func changeSnakeDirection(s *snake) {
+	if _, ok := dirOffset[keyInput]; ok == true {
+		s.direction = keyInput
+	}
+}
+
 // generates random ints for location
 func randomSpawn() (x, y int) {
 	rand.Seed(time.Now().UnixNano())
-	x = rand.Intn(factor-10) + 5
-	y = rand.Intn(factor-10) + 5
+	x = rand.Intn(boardSize-10) + 5
+	y = rand.Intn(boardSize-10) + 5
 
 	return
 }
